@@ -69,7 +69,7 @@ The paper has five research questions:
 \item How should this scoring approach be positioned relative to Free-Comment analysis, IFC, and Semantic Similarity Rating?
 \end{enumerate}
 
-\section{Related work}
+\section{Background}
 
 \subsection{Free-Comment, Ideal-Free-Comment, and MR-CA}
 
@@ -79,15 +79,13 @@ The cost is preprocessing. Free comments must be cleaned, normalized, grouped, a
 
 IFC, used in the cooked-ham case study of \citet{mahieu2022ifc}, adds the consumer's own ideal product description. Existing products cover only part of the sensory space, and a consumer's ideal may lie outside the product set. \citet{mahieu2022ifc} showed that drivers of liking and ideal-product descriptions provide complementary information, and that ideal descriptions can reveal consumer segments.
 
-\subsection{Text mining and LLM scoring}
+\subsection{Text mining, LLM scoring, and Semantic Similarity Rating}
 
 Text mining has been used in sensory science for lexicon development, descriptor extraction, term grouping, and analysis of reviews or open comments \citep{hamilton2020nlp,miller2021whisky,hamilton2025review}. Work on automated preprocessing and annotated Free-Comment benchmark data treats preprocessing as a methodological variable rather than a housekeeping step \citep{visallimahieu2023preprocessing,visalli2024madeleines}. This supports a practical reason for direct alignment scoring: a constrained model prompt may reduce some analyst-dependent preprocessing decisions, although it creates its own audit burden around prompting, calibration, and model versioning.
 
 LLMs are now often used as judges, annotators, or semantic scorers. Work such as \citet{zheng2023judge}, \citet{liu2023geval}, and \citet{gilardi2023chatgpt} shows that LLM evaluation and annotation can be useful, but not automatically reliable. Known issues include positional bias, verbosity bias, self-enhancement bias, calibration problems, and task-specific disagreement with human raters. In sensory and consumer research, recent work has considered generative AI across concept, design, and testing phases \citep{motoki2025genai}, coffee flavor annotation \citep{jakkaew2026coffee}, flavor-pairing creativity \citep{wang2025flavor}, and exploratory use of ChatGPT as a sensory evaluator \citep{torrico2025chatgpt}.
 
 Our use case is narrower than general LLM judging. The model does not rank open-ended product concepts or evaluate arbitrary prose. It receives a fixed comparison task, fixed sensory modalities, a fixed scale, and a strict JSON schema. That narrower setup makes the method easier to audit, but it does not remove the need for validation.
-
-\subsection{Semantic Similarity Rating}
 
 Semantic Similarity Rating (SSR) is an important adjacent method, but it is not the method used here. In the approach of \citet{maier2025ssr}, the LLM produces free-text responses. Those responses are mapped to Likert probability distributions by comparing response embeddings to reference anchor statements. SSR therefore returns a probability mass function over the scale.
 
@@ -103,7 +101,9 @@ We use System 1 and System 2 as a task-fit analogy, not as a literal claim about
 
 TabPFN is a tabular foundation model trained on more than 100 million synthetic tabular tasks generated from structural causal model priors \citep{hollmann2025tabpfn}. It performs prediction on a new tabular dataset through in-context inference rather than ordinary hyperparameter search. This makes TabPFN a good fit for the present workflow. The LLM produces compact tabular features, and TabPFN predicts liking without the tuning burden that would complicate large grid searches and bootstrap validation.
 
-\section{Material and methods}
+\section{Materials and methods}
+
+\subsection{Dataset and reference analysis}
 
 The case study uses the cooked-ham data of \citet{mahieu2022ifc}, with the open dataset documented by \citet{visalli2024hamdata}. The study included 483 French consumers from seven cities. Consumers purchased and evaluated cooked hams at home over 13 weeks. The product set contained 30 commercial cooked hams selected to cover variation in fat and salt content in the French market. The set excluded smoked, braised, spit-roasted, flavored, and rind-on products.
 
@@ -134,9 +134,9 @@ The original paper then linked descriptor presence to liking with a mixed model.
 
 Ideal-product descriptions were analyzed by descriptor citation proportions. Mahieu et al. also used MR-CA by modality on product-by-descriptor citation proportions, projected the ideal product as a supplementary observation, and projected mean liking as a supplementary variable. This original method is the reference point for our validation. We do not try to reproduce every descriptor effect. We ask whether direct LLM alignment scoring recovers the main sensory structure and predicts liking.
 
-\subsection{LLM scoring and prediction pipeline}
+\subsection{Direct alignment scoring and prediction}
 
-\subsubsection{Direct LLM alignment scoring}
+\subsubsection{Scoring prompt and response format}
 
 For each consumer-product row, the LLM receives six text fields: ideal visual comment, ideal texture comment, ideal flavor comment, actual visual comment, actual texture comment, and actual flavor comment. In the primary three-feature version, the LLM returns three integer alignment scores: visual alignment, texture alignment, and flavor alignment. A higher score means the actual product was judged closer to that consumer's ideal for that modality.
 
@@ -157,7 +157,7 @@ The method changes the estimand relative to descriptor-presence analysis. \citet
 \label{fig:workflow}
 \end{figure}
 
-\subsubsection{Model grid and validation}
+\subsubsection{Model grid and validation design}
 
 The model grid tested the paper's central hypothesis. If sensory alignment scoring behaves like a fast judgment task, non-thinking models should score it well. If extra reasoning improves the measurement, \gthree{} thinking configurations should outperform Flash Lite. The presentation analysis described a 27-configuration grid: three model configurations by three scale granularities by three temperatures. The core task, JSON schema, dataset, and downstream evaluation procedure were held fixed.
 
