@@ -42,6 +42,7 @@ Two adjacent literatures are relevant as context. Product-optimization work arou
 | Mahieu, Visalli and Schlich (2022), *Food Quality and Preference* 96: 104389, doi:10.1016/j.foodqual.2021.104389 | Anchor paper (three authors). Introduces Ideal-Free-Comment on the cooked-ham study (483 consumers, 30 hams, mean 5.71 hams each); mixed model identifies drivers of liking; ideal-product segment noisier. | Method, anchor |
 | Visalli, Loiseau, Cordelle, Mahieu and Schlich (2024), *Data in Brief* 54: 110549, doi:10.1016/j.dib.2024.110549 | Open dataset article for the cooked-ham home-use test; documents the field design. | Data source |
 | Worch, Lê, Punter and Pagès (2013), "Ideal Profile Method (IPM): the ins and outs," *Food Quality and Preference* 28(1): 45–59, doi:10.1016/j.foodqual.2012.08.001 | IPM, the structured-attribute ideal method; IFC is its unstructured free-text analogue. | Background |
+| Worch and Ennis (2013), "Investigating the single ideal assumption using Ideal Profile Method," *Food Quality and Preference* 29(1): 40–47, doi:10.1016/j.foodqual.2013.01.005 | Uses IPM to test whether products cue one internal ideal or different ideals; useful continuity for the paper's actual-versus-ideal framing. | Background |
 
 ### MR-CA and statistics on free-comment tables
 
@@ -189,6 +190,17 @@ The manuscript references were checked against the two verification files now st
   pages   = {45--59},
   year    = {2013},
   doi     = {10.1016/j.foodqual.2012.08.001}
+}
+
+@article{worchennis2013singleideal,
+  title   = {Investigating the single ideal assumption using Ideal Profile Method},
+  author  = {Worch, Thierry and Ennis, John M.},
+  journal = {Food Quality and Preference},
+  volume  = {29},
+  number  = {1},
+  pages   = {40--47},
+  year    = {2013},
+  doi     = {10.1016/j.foodqual.2013.01.005}
 }
 
 @article{hamilton2020nlp,

@@ -50,6 +50,7 @@ CITES = {
     "wang2025flavor": ("Wang and Pellegrino", "2025"),
     "wei2022cot": ("Wei et al.", "2022"),
     "worch2013ipm": ("Worch et al.", "2013"),
+    "worchennis2013singleideal": ("Worch and Ennis", "2013"),
     "zheng2023judge": ("Zheng et al.", "2023"),
     "zhou2026reasoning": ("Zhou et al.", "2026"),
 }

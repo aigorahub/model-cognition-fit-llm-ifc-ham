@@ -248,3 +248,10 @@ None.
 - **Context Notes:** The paper directly discusses 'overthinking' where 'extended reasoning is associated with abandoning previously correct answers,' which aligns perfectly with the manuscript's claim.
 - **Flags:** The year 2026 is in the future, but the paper is a preprint published in April 2026, which is plausible. The title discrepancy should be noted.
 
+### REF 31 — Worch and Ennis (2013)
+- **Status:** VERIFIED
+- **Appropriateness:** APPROPRIATE
+- **DOI/ID:** doi:10.1016/j.foodqual.2013.01.005
+- **Discrepancies:** None.
+- **Context Notes:** The paper uses the Ideal Profile Method to investigate whether the single-ideal assumption holds. It supports the manuscript's background framing that IFC belongs to a longer actual-versus-ideal product-methodology lineage.
+- **Flags:** None
