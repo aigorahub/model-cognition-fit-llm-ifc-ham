@@ -1,35 +1,33 @@
+SENSORY ALIGNMENT GRID COMPARISON REPORT
 
-============================================================
-SENSORY ANALYSIS GRID COMPARISON REPORT
-============================================================
+Source notebook: Embeddings and Liking/2026_01_15_sensory_grid_comparison_with_temperature (2).ipynb
+Rows: 27 configurations
+Factors: 3 model configurations x 3 scale granularities x 3 generation temperatures
+Samples: 2,758 consumer-product evaluations
+Validation: consumer-group holdout for single-split metrics; selected top configurations evaluated with 200 bootstrap resamples
 
-Date: 2026-01-15 03:42:16
-Test Mode: False
-Samples: 2758
+Top configurations by single-split R2:
 
-CONFIGURATIONS TESTED:
-────────────────────────────────────────
+ 1. Flash Lite_6pt_t07             R2=0.5731  MAE=1.2190  Time=101.3s  Errors=114
+ 2. Flash Lite_6pt_t03             R2=0.5521  MAE=1.2399  Time=101.3s  Errors=112
+ 3. Flash Lite_8pt_t07             R2=0.5383  MAE=1.2669  Time=100.6s  Errors=114
+ 4. Flash Lite_4pt_t07             R2=0.5377  MAE=1.2644  Time=101.2s  Errors=126
+ 5. Flash Lite_6pt_t0              R2=0.5342  MAE=1.2643  Time=101.3s  Errors=104
+ 6. Flash Lite_8pt_t0              R2=0.5279  MAE=1.2616  Time=103.9s  Errors=109
+ 7. Flash Lite_4pt_t03             R2=0.5274  MAE=1.2711  Time=101.1s  Errors=121
+ 8. G3 Flash (low)_8pt_t07         R2=0.5182  MAE=1.2620  Time=666.4s  Errors=155
+ 9. Flash Lite_4pt_t0              R2=0.5108  MAE=1.2919  Time=102.3s  Errors=118
+10. Flash Lite_8pt_t03             R2=0.5075  MAE=1.2899  Time=101.3s  Errors=112
 
-Flash Lite_6pt                 R²=0.534  MAE=1.264  Time=98.9s
-Flash Lite_8pt                 R²=0.528  MAE=1.262  Time=99.4s
-Flash Lite_4pt                 R²=0.511  MAE=1.292  Time=100.0s
-G3 Flash (low)_8pt             R²=0.476  MAE=1.293  Time=573.5s
-G3 Flash (low)_6pt             R²=0.466  MAE=1.311  Time=527.4s
-G3 Flash (low)_4pt             R²=0.458  MAE=1.356  Time=483.8s
-G3 Flash (minimal)_6pt         R²=0.455  MAE=1.353  Time=113.1s
-G3 Flash (minimal)_8pt         R²=0.445  MAE=1.349  Time=115.1s
-G3 Flash (minimal)_4pt         R²=0.414  MAE=1.391  Time=107.6s
+Controlled 6-point, temperature 0.7 comparison:
 
-────────────────────────────────────────
-BEST CONFIGURATION:
-   Flash Lite_6pt
-   Model: gemini-flash-lite-latest
-   Thinking: None
-   Scale: 6-point
-   R² = 0.534
-   MAE = 1.264
+Flash Lite_6pt_t07                 R2=0.5731  MAE=1.2190  Time=101.3s  Errors=114
+G3 Flash (low)_6pt_t07             R2=0.4787  MAE=1.3301  Time=618.9s  Errors=137
+G3 Flash (minimal)_6pt_t07         R2=0.4506  MAE=1.3618  Time=133.0s  Errors=209
 
-COMPARISON TO PREVIOUS BEST:
-   Previous: R²=0.485, MAE=1.305 (6-pt, Gemini 3 Flash, no thinking)
-   
-============================================================
+Best configuration:
+Flash Lite_6pt_t07, Gemini 2.5 Flash Lite, 6-point scale, temperature 0.7.
+
+Bootstrap summary for selected top configurations is stored in bootstrap_top_config_results.csv.
+Pairwise and family-level bootstrap win probabilities are stored in bootstrap_pairwise_probabilities.csv and bootstrap_family_win_probabilities.csv.
+The downstream learner bake-off summary is stored in downstream_model_comparison_results.csv.

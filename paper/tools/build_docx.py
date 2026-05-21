@@ -97,6 +97,16 @@ def latex_to_text(text: str) -> str:
     return text
 
 
+def equation_to_text(equation: str) -> str:
+    if '"visual"' in equation and '"texture"' in equation and '"flavor"' in equation:
+        return '{"visual": X, "texture": X, "flavor": X}.'
+    if r"\Rtwo" in equation and r"\mae" in equation:
+        return "R² = 1 - sum_i (y_i - y-hat_i)^2 / sum_i (y_i - y-bar)^2; MAE = (1/n) sum_i |y_i - y-hat_i|."
+    if r"\cos" in equation and r"\mathbf" in equation:
+        return "cos(a, i) = (a · i) / (||a|| ||i||)."
+    return latex_to_text(equation)
+
+
 def extract_braced(source: str, command: str) -> str:
     marker = f"\\{command}{{"
     start = source.find(marker)
@@ -131,7 +141,7 @@ def configure_document(doc: Document) -> None:
     normal.paragraph_format.line_spacing = 1.15
     normal.paragraph_format.space_after = Pt(6)
 
-    for style_name, size in [("Title", 16), ("Heading 1", 14), ("Heading 2", 12)]:
+    for style_name, size in [("Title", 16), ("Heading 1", 14), ("Heading 2", 12), ("Heading 3", 12)]:
         style = doc.styles[style_name]
         style.font.name = "Times New Roman"
         style.font.size = Pt(size)
@@ -178,15 +188,13 @@ def parse_table(doc: Document, block: str) -> None:
     if body_start < 0 or body_start >= end:
         return
     body = block[body_start:end]
+    body = re.sub(r"\\(toprule|midrule|bottomrule)\s*", "", body)
     rows = []
     for raw in re.split(r"\\\\", body):
         raw = raw.strip()
-        if not raw or raw.startswith("\\toprule") or raw.startswith("\\midrule") or raw.startswith("\\bottomrule"):
-            continue
-        raw = re.sub(r"\\(toprule|midrule|bottomrule)", "", raw).strip()
         if not raw:
             continue
-        rows.append([latex_to_text(cell.strip()) for cell in raw.split("&")])
+        rows.append([latex_to_text(cell.strip()) for cell in re.split(r"(?<!\\)&", raw)])
     if not rows:
         return
     n_cols = max(len(row) for row in rows)
@@ -267,15 +275,20 @@ def build_docx() -> None:
         if not stripped or stripped in {r"\maketitle", r"\centering"}:
             flush_paragraph()
             return
-        section = re.match(r"\\section\*?\{(.+)\}", stripped)
+        section = re.match(r"\\section\*?\{([^}]+)\}", stripped)
         if section:
             flush_paragraph()
             doc.add_heading(latex_to_text(section.group(1)), level=1)
             return
-        subsection = re.match(r"\\subsection\{(.+)\}", stripped)
+        subsection = re.match(r"\\subsection\{([^}]+)\}", stripped)
         if subsection:
             flush_paragraph()
             doc.add_heading(latex_to_text(subsection.group(1)), level=2)
+            return
+        subsubsection = re.match(r"\\subsubsection\{([^}]+)\}", stripped)
+        if subsubsection:
+            flush_paragraph()
+            doc.add_heading(latex_to_text(subsubsection.group(1)), level=3)
             return
         if stripped == r"\begin{itemize}":
             flush_paragraph()
@@ -315,7 +328,7 @@ def build_docx() -> None:
             parse_bibliography(doc, block)
         elif block.startswith(r"\["):
             equation = block.replace(r"\[", "").replace(r"\]", "").strip()
-            p = doc.add_paragraph(latex_to_text(equation))
+            p = doc.add_paragraph(equation_to_text(equation))
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         pos = match.end()
 

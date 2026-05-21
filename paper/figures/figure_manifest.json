@@ -7,8 +7,12 @@
     "fig5_topic_rank"
   ],
   "source_data": [
+    "data/grid/bootstrap_family_win_probabilities.csv",
+    "data/grid/bootstrap_pairwise_probabilities.csv",
+    "data/grid/bootstrap_top_config_results.csv",
+    "data/grid/downstream_model_comparison_results.csv",
+    "data/grid/grid_comparison_results.csv",
     "data/grid/feature_importance_results.csv",
-    "data/topic_level/topic_level_contrast_points.csv",
-    "GRID_27 constants copied from talk/render_charts.py"
+    "data/topic_level/topic_level_contrast_points.csv"
   ]
 }

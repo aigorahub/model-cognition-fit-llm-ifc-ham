@@ -53,35 +53,18 @@ plt.rcParams.update(
 )
 
 
-GRID_27 = [
-    ("Flash Lite_4pt_t0", "Gemini 2.5 Flash Lite", 4, 0.0, 0.5108, 1.2919),
-    ("Flash Lite_4pt_t03", "Gemini 2.5 Flash Lite", 4, 0.3, 0.5274, 1.2711),
-    ("Flash Lite_4pt_t07", "Gemini 2.5 Flash Lite", 4, 0.7, 0.5377, 1.2644),
-    ("Flash Lite_6pt_t0", "Gemini 2.5 Flash Lite", 6, 0.0, 0.5342, 1.2643),
-    ("Flash Lite_6pt_t03", "Gemini 2.5 Flash Lite", 6, 0.3, 0.5521, 1.2399),
-    ("Flash Lite_6pt_t07", "Gemini 2.5 Flash Lite", 6, 0.7, 0.5731, 1.2190),
-    ("Flash Lite_8pt_t0", "Gemini 2.5 Flash Lite", 8, 0.0, 0.5279, 1.2616),
-    ("Flash Lite_8pt_t03", "Gemini 2.5 Flash Lite", 8, 0.3, 0.5075, 1.2899),
-    ("Flash Lite_8pt_t07", "Gemini 2.5 Flash Lite", 8, 0.7, 0.5383, 1.2669),
-    ("G3 Flash (minimal)_4pt_t0", "Gemini 3 Flash minimal", 4, 0.0, 0.4214, 1.3834),
-    ("G3 Flash (minimal)_4pt_t03", "Gemini 3 Flash minimal", 4, 0.3, 0.4364, 1.3689),
-    ("G3 Flash (minimal)_4pt_t07", "Gemini 3 Flash minimal", 4, 0.7, 0.4111, 1.3839),
-    ("G3 Flash (minimal)_6pt_t0", "Gemini 3 Flash minimal", 6, 0.0, 0.4597, 1.3507),
-    ("G3 Flash (minimal)_6pt_t03", "Gemini 3 Flash minimal", 6, 0.3, 0.4654, 1.3320),
-    ("G3 Flash (minimal)_6pt_t07", "Gemini 3 Flash minimal", 6, 0.7, 0.4506, 1.3618),
-    ("G3 Flash (minimal)_8pt_t0", "Gemini 3 Flash minimal", 8, 0.0, 0.4311, 1.3474),
-    ("G3 Flash (minimal)_8pt_t03", "Gemini 3 Flash minimal", 8, 0.3, 0.4222, 1.3599),
-    ("G3 Flash (minimal)_8pt_t07", "Gemini 3 Flash minimal", 8, 0.7, 0.4586, 1.3413),
-    ("G3 Flash (low)_4pt_t0", "Gemini 3 Flash low", 4, 0.0, 0.4619, 1.3580),
-    ("G3 Flash (low)_4pt_t03", "Gemini 3 Flash low", 4, 0.3, 0.4327, 1.3851),
-    ("G3 Flash (low)_4pt_t07", "Gemini 3 Flash low", 4, 0.7, 0.4394, 1.3683),
-    ("G3 Flash (low)_6pt_t0", "Gemini 3 Flash low", 6, 0.0, 0.4730, 1.3111),
-    ("G3 Flash (low)_6pt_t03", "Gemini 3 Flash low", 6, 0.3, 0.4840, 1.2917),
-    ("G3 Flash (low)_6pt_t07", "Gemini 3 Flash low", 6, 0.7, 0.4787, 1.3301),
-    ("G3 Flash (low)_8pt_t0", "Gemini 3 Flash low", 8, 0.0, 0.4673, 1.3098),
-    ("G3 Flash (low)_8pt_t03", "Gemini 3 Flash low", 8, 0.3, 0.5019, 1.2943),
-    ("G3 Flash (low)_8pt_t07", "Gemini 3 Flash low", 8, 0.7, 0.5182, 1.2620),
-]
+GRID_RESULTS = GRID_DATA / "grid_comparison_results.csv"
+
+
+def load_grid_results() -> pd.DataFrame:
+    df = pd.read_csv(GRID_RESULTS)
+    required = {"config_id", "model", "scale", "temperature", "r2", "mae", "llm_time", "errors", "n_valid"}
+    missing = required.difference(df.columns)
+    if missing:
+        raise ValueError(f"{GRID_RESULTS} is missing columns: {sorted(missing)}")
+    if "error_rate" not in df.columns:
+        df["error_rate"] = df["errors"] / df["n_valid"]
+    return df
 
 
 def save(fig: plt.Figure, name: str) -> None:
@@ -166,7 +149,7 @@ def draw_workflow() -> None:
 
 
 def draw_model_grid() -> None:
-    df = pd.DataFrame(GRID_27, columns=["config", "model", "scale", "temperature", "r2", "mae"])
+    df = load_grid_results()
     order = ["Gemini 2.5 Flash Lite", "Gemini 3 Flash low", "Gemini 3 Flash minimal"]
     colors = {
         "Gemini 2.5 Flash Lite": ACCENT,
@@ -193,18 +176,20 @@ def draw_model_grid() -> None:
 
 
 def draw_operations() -> None:
-    labels = ["2.5 Flash Lite\n6 pt, t=.7", "3 Flash low\n8 pt, t=.7", "3 Flash minimal\n4 pt, t=.7"]
-    seconds = [102, 614, 131]
-    errors = [0.02, 0.15, 3.40]
+    df = load_grid_results().set_index("config_id")
+    configs = ["Flash Lite_6pt_t07", "G3 Flash (low)_6pt_t07", "G3 Flash (minimal)_6pt_t07"]
+    labels = ["2.5 Flash Lite", "3 Flash low", "3 Flash minimal"]
+    seconds = [df.loc[config, "llm_time"] for config in configs]
+    errors = [100 * df.loc[config, "error_rate"] for config in configs]
     colors = [ACCENT, MUTED, GREY]
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0))
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.1))
     axes[0].bar(labels, seconds, color=colors, width=0.62)
     axes[0].set_ylabel("Wall-clock time (s)")
     axes[0].set_title("Runtime")
     axes[0].grid(axis="y", alpha=0.2)
     axes[1].bar(labels, errors, color=colors, width=0.62)
-    axes[1].set_ylabel("JSON parse errors (%)")
-    axes[1].set_title("Structured-output failures")
+    axes[1].set_ylabel("Rows with scoring errors (%)")
+    axes[1].set_title("Scoring reliability")
     axes[1].grid(axis="y", alpha=0.2)
     for ax in axes:
         ax.tick_params(axis="x", labelsize=7.5)
@@ -220,8 +205,12 @@ def draw_modality_importance() -> None:
     ours_map = dict(zip(ours["feature"], ours["importance"]))
     mahieu = {"Flavor": 0.261, "Texture": 0.201, "Visual": 0.139}
     labels = ["Flavor", "Texture", "Visual"]
-    ours_vals = [ours_map[x] for x in labels]
-    mahieu_vals = [mahieu[x] for x in labels]
+    ours_raw = np.array([ours_map[x] for x in labels])
+    mahieu_raw = np.array([mahieu[x] for x in labels])
+    ours_sum = ours_raw.sum()
+    mahieu_sum = mahieu_raw.sum()
+    ours_vals = 100 * ours_raw / ours_sum if ours_sum > 0 else ours_raw
+    mahieu_vals = 100 * mahieu_raw / mahieu_sum if mahieu_sum > 0 else mahieu_raw
     fig, ax = plt.subplots(figsize=(6.2, 3.2))
     x = np.arange(len(labels))
     width = 0.36
@@ -229,7 +218,7 @@ def draw_modality_importance() -> None:
     ax.bar(x + width / 2, ours_vals, width, label="LLM feature importance", color=ACCENT)
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
-    ax.set_ylabel("Importance scale within method")
+    ax.set_ylabel("Within-method share (%)")
     ax.set_title("Both analyses put flavor first")
     ax.legend(frameon=False, fontsize=8)
     ax.grid(axis="y", alpha=0.2)
@@ -313,9 +302,13 @@ def write_summary() -> None:
             "fig5_topic_rank",
         ],
         "source_data": [
+            repo_path(GRID_DATA / "bootstrap_family_win_probabilities.csv"),
+            repo_path(GRID_DATA / "bootstrap_pairwise_probabilities.csv"),
+            repo_path(GRID_DATA / "bootstrap_top_config_results.csv"),
+            repo_path(GRID_DATA / "downstream_model_comparison_results.csv"),
+            repo_path(GRID_RESULTS),
             repo_path(GRID_DATA / "feature_importance_results.csv"),
             repo_path(TOPIC_DATA / "topic_level_contrast_points.csv"),
-            "GRID_27 constants copied from talk/render_charts.py",
         ],
     }
     (OUT / "figure_manifest.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")

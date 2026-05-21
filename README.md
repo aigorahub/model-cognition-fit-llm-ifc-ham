@@ -4,7 +4,7 @@ Model-cognition fit in AI-supported sensory analysis.
 
 This repository supports a working paper on model-cognition fit in LLM scoring of Ideal-Free-Comment sensory data. The case study uses the cooked-ham consumer dataset from Mahieu, Visalli and Schlich (2022), where French consumers described actual hams and their ideal ham using Free-Comment across visual appearance, texture and flavor.
 
-The main empirical question is whether a fast, direct-response LLM is a better scoring instrument for sensory actual-versus-ideal alignment than a reasoning-oriented model. The current results show that Gemini 2.5 Flash Lite produced stronger liking prediction, lower runtime and fewer structured-output failures than tested Gemini 3 Flash reasoning configurations.
+The main empirical question is whether a fast, direct-response LLM is a better scoring instrument for sensory actual-versus-ideal alignment than a reasoning-oriented model. The current results show that Gemini 2.5 Flash Lite produced stronger liking prediction, lower runtime and fewer row-level scoring errors than tested Gemini 3 Flash reasoning configurations in the controlled six-point comparison.
 
 ## Repository contents
 
