@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite the paper and the original cooked-ham dataset sources."
+title: "Is more thinking always better? Think again: Less reasoning, better sensory predictions in sensometrics"
+authors:
+  - family-names: Ennis
+    given-names: John M.
+  - family-names: Worch
+    given-names: Thierry
+  - family-names: Mahieu
+    given-names: Benjamin
+year: 2026
+repository-code: "https://github.com/aigorahub/model-cognition-fit-llm-ifc-ham"
+preferred-citation:
+  type: article
+  title: "Is more thinking always better? Think again: Less reasoning, better sensory predictions in sensometrics"
+  authors:
+    - family-names: Ennis
+      given-names: John M.
+    - family-names: Worch
+      given-names: Thierry
+    - family-names: Mahieu
+      given-names: Benjamin
+  year: 2026
+  notes: "Working paper"

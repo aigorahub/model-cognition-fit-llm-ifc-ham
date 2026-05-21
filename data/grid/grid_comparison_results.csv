@@ -1,0 +1,10 @@
+config_id,model,model_name,thinking_config,is_gemini3,scale,r2,mae,baseline_mae,llm_time,errors,n_valid
+Flash Lite_4pt,Flash Lite,gemini-flash-lite-latest,None,False,4,0.5107621455799671,1.2918552269130783,1.9204428328606307,99.95162916183472,118,2758
+Flash Lite_6pt,Flash Lite,gemini-flash-lite-latest,None,False,6,0.534244831689491,1.264299131443626,1.9204428328606307,98.9101619720459,104,2758
+Flash Lite_8pt,Flash Lite,gemini-flash-lite-latest,None,False,8,0.5278618842223852,1.2616032280679623,1.9204428328606307,99.40884804725647,109,2758
+G3 Flash (minimal)_4pt,G3 Flash (minimal),gemini-3-flash-preview,{'thinkingLevel': 'minimal'},True,4,0.4137905986239746,1.3913757534165563,1.9204428328606307,107.63796186447144,113,2758
+G3 Flash (minimal)_6pt,G3 Flash (minimal),gemini-3-flash-preview,{'thinkingLevel': 'minimal'},True,6,0.4553396418288269,1.3528435286852498,1.9204428328606307,113.05322289466858,197,2758
+G3 Flash (minimal)_8pt,G3 Flash (minimal),gemini-3-flash-preview,{'thinkingLevel': 'minimal'},True,8,0.4453192962144966,1.3494499368719526,1.9204428328606307,115.10403037071228,228,2758
+G3 Flash (low)_4pt,G3 Flash (low),gemini-3-flash-preview,{'thinkingLevel': 'low'},True,4,0.45811275046601463,1.3559958093612035,1.9204428328606307,483.8023200035095,99,2758
+G3 Flash (low)_6pt,G3 Flash (low),gemini-3-flash-preview,{'thinkingLevel': 'low'},True,6,0.4656674256470055,1.3112420769395499,1.9204428328606307,527.3650810718536,133,2758
+G3 Flash (low)_8pt,G3 Flash (low),gemini-3-flash-preview,{'thinkingLevel': 'low'},True,8,0.47584812664219545,1.2930122743457717,1.9204428328606307,573.492311000824,158,2758

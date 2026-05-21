@@ -1,0 +1,35 @@
+
+============================================================
+SENSORY ANALYSIS GRID COMPARISON REPORT
+============================================================
+
+Date: 2026-01-15 03:42:16
+Test Mode: False
+Samples: 2758
+
+CONFIGURATIONS TESTED:
+────────────────────────────────────────
+
+Flash Lite_6pt                 R²=0.534  MAE=1.264  Time=98.9s
+Flash Lite_8pt                 R²=0.528  MAE=1.262  Time=99.4s
+Flash Lite_4pt                 R²=0.511  MAE=1.292  Time=100.0s
+G3 Flash (low)_8pt             R²=0.476  MAE=1.293  Time=573.5s
+G3 Flash (low)_6pt             R²=0.466  MAE=1.311  Time=527.4s
+G3 Flash (low)_4pt             R²=0.458  MAE=1.356  Time=483.8s
+G3 Flash (minimal)_6pt         R²=0.455  MAE=1.353  Time=113.1s
+G3 Flash (minimal)_8pt         R²=0.445  MAE=1.349  Time=115.1s
+G3 Flash (minimal)_4pt         R²=0.414  MAE=1.391  Time=107.6s
+
+────────────────────────────────────────
+BEST CONFIGURATION:
+   Flash Lite_6pt
+   Model: gemini-flash-lite-latest
+   Thinking: None
+   Scale: 6-point
+   R² = 0.534
+   MAE = 1.264
+
+COMPARISON TO PREVIOUS BEST:
+   Previous: R²=0.485, MAE=1.305 (6-pt, Gemini 3 Flash, no thinking)
+   
+============================================================

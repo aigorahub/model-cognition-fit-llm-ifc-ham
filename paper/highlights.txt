@@ -1,0 +1,4 @@
+Direct LLM scoring predicted liking from actual and ideal ham comments.
+Gemini 2.5 Flash Lite beat reasoning-oriented Gemini 3 Flash.
+Topic ranks matched Mahieu et al. families, Kendall tau-b = 0.519.
+Flavor remained strongest in both classical and LLM analyses.

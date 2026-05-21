@@ -1,0 +1,52 @@
+{
+  "agents_per_type": 10,
+  "products_per_agent": 6,
+  "seed": 42,
+  "generator_models": {
+    "system1": {
+      "label": "System 1",
+      "model": "gemini-2.5-flash-lite",
+      "thinking_config": null,
+      "description": "fast, intuitive, affective consumer response"
+    },
+    "system2": {
+      "label": "System 2",
+      "model": "gemini-3-flash-preview",
+      "thinking_config": {
+        "thinkingLevel": "low"
+      },
+      "description": "deliberate, analytical consumer response"
+    }
+  },
+  "analysis_models": {
+    "flash_lite_25": {
+      "label": "Gemini 2.5 Flash Lite analysis",
+      "model": "gemini-2.5-flash-lite",
+      "thinking_config": null
+    },
+    "g3_flash_low": {
+      "label": "Gemini 3 Flash low-thinking analysis",
+      "model": "gemini-3-flash-preview",
+      "thinking_config": {
+        "thinkingLevel": "low"
+      }
+    }
+  },
+  "product_ids": [
+    "J22",
+    "J17",
+    "J11",
+    "J29",
+    "J25",
+    "J07"
+  ],
+  "output_dir": "Embeddings and Liking/agent_type_simulation_smoke_10x6",
+  "complete": true,
+  "html_report": "Embeddings and Liking/agent_type_simulation_smoke_10x6/simulation_smoke_report.html",
+  "rows": {
+    "agents": 20,
+    "evaluations": 120,
+    "scores": 240,
+    "matrix": 4
+  }
+}

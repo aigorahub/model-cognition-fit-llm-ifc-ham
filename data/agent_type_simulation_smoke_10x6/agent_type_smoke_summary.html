@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model-person fit smoke test</title>
+<style>
+:root {
+  --paper: #f7f6f2;
+  --ink: #1a2721;
+  --sage: #4a5d53;
+  --terracotta: #c05a45;
+  --sand: #eae6db;
+  --line: #d9d1c0;
+  --white: #fffdf8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at top left, rgba(192, 90, 69, 0.16), transparent 32rem), var(--paper);
+  color: var(--ink);
+  font-family: Manrope, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.45;
+}
+main { width: min(1180px, calc(100vw - 48px)); margin: 0 auto; padding: 48px 0 72px; }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+h1 {
+  margin: 0 0 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(46px, 7vw, 92px);
+  line-height: 0.94;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.kicker { color: var(--terracotta); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; font-size: 12px; }
+.deckline { margin: 0; max-width: 760px; color: var(--sage); font-size: 20px; }
+.verdict {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 8px;
+  padding: 22px;
+  box-shadow: 0 18px 36px rgba(26, 39, 33, 0.12);
+}
+.verdict h2 { margin: 0 0 10px; font-size: 22px; }
+.verdict p { margin: 0; color: #e9e3d4; }
+.stat-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 24px 0 36px; }
+.stat-card {
+  background: rgba(255, 253, 248, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 122px;
+}
+.stat-value { font-size: 38px; line-height: 1; color: var(--terracotta); font-weight: 800; }
+.stat-label { margin-top: 10px; font-weight: 800; }
+.stat-note { margin-top: 4px; color: var(--sage); font-size: 13px; }
+.section {
+  margin-top: 34px;
+  background: rgba(255, 253, 248, 0.62);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+}
+.section-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 18px; }
+.section h2 { margin: 0; font-size: 26px; letter-spacing: 0; }
+.section p { margin: 4px 0 0; color: var(--sage); max-width: 760px; }
+.matrix-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.matrix-card { background: var(--sand); border-radius: 8px; padding: 18px; border: 1px solid #d8cfbd; }
+.eyebrow { color: var(--sage); text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; font-weight: 800; }
+.matrix-rows { display: grid; gap: 12px; margin-top: 14px; }
+.matrix-row {
+  background: rgba(247, 246, 242, 0.68);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 14px;
+}
+.matrix-row.winner { border-color: var(--terracotta); background: #fff8f4; }
+.matrix-row-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-size: 16px; }
+.matrix-row-head strong { color: var(--terracotta); white-space: nowrap; }
+.matrix-note { margin-top: 7px; color: var(--sage); font-size: 13px; }
+.mae-track { width: 100%; height: 12px; border-radius: 999px; background: rgba(74, 93, 83, 0.18); overflow: hidden; margin-top: 10px; }
+.mae-track span { display: block; height: 100%; background: linear-gradient(90deg, var(--terracotta), #cf806f); border-radius: 999px; }
+.callout-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.callout-list li { padding: 12px 14px; border-left: 4px solid var(--terracotta); background: rgba(234, 230, 219, 0.58); border-radius: 0 8px 8px 0; }
+.calibration { display: grid; gap: 14px; }
+.cal-row { display: grid; grid-template-columns: 260px 1fr 190px; gap: 14px; align-items: center; }
+.cal-row strong { display: block; }
+.cal-row span, .cal-values { color: var(--sage); font-size: 13px; }
+.cal-track {
+  position: relative;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #efe9dc, #dacdb6);
+  border: 1px solid var(--line);
+}
+.cal-track i { position: absolute; top: 50%; transform: translate(-50%, -50%); display: block; }
+.actual-marker { width: 16px; height: 16px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 3px var(--paper); }
+.pred-marker { width: 6px; height: 28px; background: var(--terracotta); border-radius: 999px; }
+.legend { display: flex; gap: 16px; color: var(--sage); font-size: 13px; margin-top: 10px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); display: inline-block; }
+.tick { width: 5px; height: 18px; border-radius: 999px; background: var(--terracotta); display: inline-block; }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr); gap: 22px; }
+.method-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; }
+.method-table th, .method-table td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.method-table th { color: var(--sage); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+code { color: var(--ink); background: var(--sand); padding: 2px 5px; border-radius: 4px; }
+.agent-mix { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.agent-mix li { background: var(--sand); border: 1px solid #d8cfbd; border-radius: 8px; padding: 14px; }
+.agent-mix strong { display: block; margin-bottom: 3px; }
+.agent-mix span { color: var(--sage); }
+.products { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.products span { background: var(--ink); color: var(--paper); padding: 7px 10px; border-radius: 999px; font-weight: 800; font-size: 13px; }
+.next-step { font-size: 18px; color: var(--ink); max-width: 900px; }
+footer { margin-top: 26px; color: var(--sage); font-size: 13px; }
+@media (max-width: 900px) {
+  main { width: min(100vw - 28px, 760px); padding-top: 28px; }
+  .hero, .stat-grid, .matrix-grid, .two-col { grid-template-columns: 1fr; }
+  .stat-grid { gap: 10px; }
+  .cal-row { grid-template-columns: 1fr; gap: 8px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <div>
+      <div class="kicker">Synthetic consumer simulation</div>
+      <h1>Model-person fit smoke test</h1>
+      <p class="deckline">A small 10 plus 10 agent run asked whether a System 1 analysis model works better for System 1 synthetic consumers, and whether a low-thinking Gemini 3 analysis model works better for System 2 synthetic consumers.</p>
+    </div>
+    <aside class="verdict">
+      <h2>The matching effect did not appear in this first smoke test.</h2>
+      <p>Gemini 3 Flash low thinking produced lower MAE for both synthetic agent groups. The current signal looks more like scoring calibration than model-person matching.</p>
+    </aside>
+  </header>
+
+  <section class="stat-grid" aria-label="Run size">
+    <div class="stat-card">
+  <div class="stat-value">20</div>
+  <div class="stat-label">Synthetic agents</div>
+  <div class="stat-note">2 decision styles</div>
+</div>
+    <div class="stat-card">
+  <div class="stat-value">120</div>
+  <div class="stat-label">Ham evaluations</div>
+  <div class="stat-note">same fixed products for each agent</div>
+</div>
+    <div class="stat-card">
+  <div class="stat-value">240</div>
+  <div class="stat-label">Similarity scores</div>
+  <div class="stat-note">two analysis models per row</div>
+</div>
+    <div class="stat-card">
+  <div class="stat-value">6</div>
+  <div class="stat-label">Products</div>
+  <div class="stat-note">J22, J17, J11, J29, J25, J07</div>
+</div>
+    <div class="stat-card">
+  <div class="stat-value">G3 low</div>
+  <div class="stat-label">Winner</div>
+  <div class="stat-note">lower MAE in both groups</div>
+</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>The 2 x 2 result</h2>
+        <p>Rows are synthetic consumer type. Within each row, both analysis models scored the same actual-vs-ideal comments. Lower MAE is better.</p>
+      </div>
+    </div>
+    <div class="matrix-grid"><section class="matrix-card">
+  <div class="eyebrow">System 1 synthetic agents</div>
+  <div class="matrix-rows"><div class="matrix-row winner">
+  <div class="matrix-row-head">
+    <span>Gemini 3 Flash low thinking</span>
+    <strong>MAE 0.73</strong>
+  </div>
+  <div class="mae-track"><span style="width:25.2%"></span></div>
+  <div class="matrix-note">
+    predicted mean 5.29 vs actual mean 5.35
+  </div>
+</div><div class="matrix-row">
+  <div class="matrix-row-head">
+    <span>Gemini 2.5 Flash Lite</span>
+    <strong>MAE 1.14</strong>
+  </div>
+  <div class="mae-track"><span style="width:39.1%"></span></div>
+  <div class="matrix-note">
+    predicted mean 4.32 vs actual mean 5.35
+  </div>
+</div></div>
+</section><section class="matrix-card">
+  <div class="eyebrow">System 2 synthetic agents</div>
+  <div class="matrix-rows"><div class="matrix-row winner">
+  <div class="matrix-row-head">
+    <span>Gemini 3 Flash low thinking</span>
+    <strong>MAE 1.71</strong>
+  </div>
+  <div class="mae-track"><span style="width:58.6%"></span></div>
+  <div class="matrix-note">
+    predicted mean 2.42 vs actual mean 4.10
+  </div>
+</div><div class="matrix-row">
+  <div class="matrix-row-head">
+    <span>Gemini 2.5 Flash Lite</span>
+    <strong>MAE 2.91</strong>
+  </div>
+  <div class="mae-track"><span style="width:100.0%"></span></div>
+  <div class="matrix-note">
+    predicted mean 1.19 vs actual mean 4.10
+  </div>
+</div></div>
+</section></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>What this says</h2>
+        <p>The first pass is useful because it rules out the simple version of the matching story. We did not see 2.5 Flash Lite win on System 1 synthetic consumers.</p>
+      </div>
+    </div>
+    <ul class="callout-list">
+      <li>
+  <strong>System 1 synthetic agents:</strong>
+  G3 low reduced MAE by 0.41 points versus 2.5 Flash Lite.
+</li><li>
+  <strong>System 2 synthetic agents:</strong>
+  G3 low reduced MAE by 1.21 points versus 2.5 Flash Lite.
+</li>
+      <li><strong>Likely issue:</strong> the direct similarity-to-liking mapping is not calibrated. Flash Lite's predicted liking means are lower than the generated liking scores, especially for System 2 agents.</li>
+      <li><strong>Next cleaner test:</strong> use the model scores as features in a small calibrated downstream model, then compare held-out performance by synthetic agent type.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Calibration check</h2>
+        <p>Black dots show mean generated liking. Terracotta ticks show mean predicted liking after the current direct 1-to-6 similarity mapping.</p>
+      </div>
+    </div>
+    <div class="calibration"><div class="cal-row">
+  <div>
+    <strong>System 1 synthetic agents</strong>
+    <span>Gemini 2.5 Flash Lite</span>
+  </div>
+  <div class="cal-track" aria-label="Mean actual and predicted liking on a zero to ten scale">
+    <i class="actual-marker" style="left:53.5%"></i>
+    <i class="pred-marker" style="left:43.2%"></i>
+  </div>
+  <div class="cal-values">actual 5.35 | predicted 4.32</div>
+</div><div class="cal-row">
+  <div>
+    <strong>System 1 synthetic agents</strong>
+    <span>Gemini 3 Flash low thinking</span>
+  </div>
+  <div class="cal-track" aria-label="Mean actual and predicted liking on a zero to ten scale">
+    <i class="actual-marker" style="left:53.5%"></i>
+    <i class="pred-marker" style="left:52.9%"></i>
+  </div>
+  <div class="cal-values">actual 5.35 | predicted 5.29</div>
+</div><div class="cal-row">
+  <div>
+    <strong>System 2 synthetic agents</strong>
+    <span>Gemini 2.5 Flash Lite</span>
+  </div>
+  <div class="cal-track" aria-label="Mean actual and predicted liking on a zero to ten scale">
+    <i class="actual-marker" style="left:41.0%"></i>
+    <i class="pred-marker" style="left:11.9%"></i>
+  </div>
+  <div class="cal-values">actual 4.10 | predicted 1.19</div>
+</div><div class="cal-row">
+  <div>
+    <strong>System 2 synthetic agents</strong>
+    <span>Gemini 3 Flash low thinking</span>
+  </div>
+  <div class="cal-track" aria-label="Mean actual and predicted liking on a zero to ten scale">
+    <i class="actual-marker" style="left:41.0%"></i>
+    <i class="pred-marker" style="left:24.2%"></i>
+  </div>
+  <div class="cal-values">actual 4.10 | predicted 2.42</div>
+</div></div>
+    <div class="legend"><span><i class="dot"></i>actual mean liking</span><span><i class="tick"></i>predicted mean liking</span></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>Model routing</h2>
+        <p>The smoke test pinned Flash Lite to the 2.5 model ID and used low thinking for Gemini 3 Flash.</p>
+      </div>
+    </div>
+    <table class="method-table">
+  <thead><tr><th>Component</th><th>Role</th><th>Exact model route</th></tr></thead>
+  <tbody><tr>
+  <td>System 1 synthetic agents</td>
+  <td>agent profile and ham response generation</td>
+  <td><code>gemini-2.5-flash-lite</code></td>
+</tr><tr>
+  <td>System 2 synthetic agents</td>
+  <td>agent profile and ham response generation</td>
+  <td><code>gemini-3-flash-preview | thinkingLevel=low</code></td>
+</tr><tr>
+  <td>Gemini 2.5 Flash Lite</td>
+  <td>similarity scoring for every synthetic row</td>
+  <td><code>gemini-2.5-flash-lite</code></td>
+</tr><tr>
+  <td>Gemini 3 Flash low thinking</td>
+  <td>similarity scoring for every synthetic row</td>
+  <td><code>gemini-3-flash-preview | thinkingLevel=low</code></td>
+</tr></tbody>
+</table>
+  </section>
+
+  <section class="section">
+    <div class="two-col">
+      <div>
+        <h2>Run details</h2>
+        <p>All agents evaluated the same six hams, so product choice does not explain differences across cells.</p>
+        <div class="products"><span>J22</span><span>J17</span><span>J11</span><span>J29</span><span>J25</span><span>J07</span></div>
+      </div>
+      <div>
+        <h2>Agent mix</h2>
+        <ul class="agent-mix"><li>
+  <strong>System 1 synthetic agents</strong>
+  <span>10 agents; salt preference: mostly moderate; texture priority: mostly moderate; flavor priority: mostly high</span>
+</li><li>
+  <strong>System 2 synthetic agents</strong>
+  <span>10 agents; salt preference: mostly low; texture priority: mostly high; flavor priority: mostly moderate</span>
+</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>How to read it</h2>
+    <p class="next-step">This is a pipeline and hypothesis-generation result, not a paper-ready finding. The useful broad conclusion is that the naive direct-score setup did not produce a person-model matching effect. The next version should keep the synthetic design, but train or calibrate the liking prediction step before judging whether different analysis models fit different consumer types.</p>
+  </section>
+
+  <footer>
+    Source folder: <code>Embeddings and Liking/agent_type_simulation_smoke_10x6</code>. Report reads saved CSV and JSON outputs only.
+  </footer>
+</main>
+</body>
+</html>

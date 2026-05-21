@@ -1,0 +1,14 @@
+{
+  "figures": [
+    "fig1_workflow",
+    "fig2_model_grid",
+    "fig3_operations",
+    "fig4_modality_importance",
+    "fig5_topic_rank"
+  ],
+  "source_data": [
+    "/Users/johnennis/aigora/dev/sensometrics-2026-posters/public_repo/model-cognition-fit-llm-ifc-ham/data/grid/feature_importance_results.csv",
+    "/Users/johnennis/aigora/dev/sensometrics-2026-posters/public_repo/model-cognition-fit-llm-ifc-ham/data/topic_level/topic_level_contrast_points.csv",
+    "GRID_27 constants copied from talk/render_charts.py"
+  ]
+}
