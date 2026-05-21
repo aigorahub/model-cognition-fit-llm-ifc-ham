@@ -98,17 +98,17 @@ def panel_label(ax, label: str) -> None:
 
 
 def draw_workflow() -> None:
-    fig, ax = plt.subplots(figsize=(7.2, 2.5))
+    fig, ax = plt.subplots(figsize=(7.6, 2.45))
     ax.axis("off")
-    ax.set_xlim(0, 10)
+    ax.set_xlim(0, 12)
     ax.set_ylim(0, 3)
 
     boxes = [
-        (0.25, 1.0, 1.75, 1.0, "Actual and\nideal comments"),
-        (2.35, 1.0, 1.65, 1.0, "LLM alignment\nscoring"),
-        (4.35, 1.0, 1.5, 1.0, "Visual\nTexture\nFlavor"),
-        (6.2, 1.0, 1.45, 1.0, "TabPFN\nregression"),
-        (8.0, 1.0, 1.65, 1.0, "Held-out\nliking"),
+        (0.35, 0.95, 1.85, 1.05, "Actual and\nideal\ncomments"),
+        (2.75, 0.95, 1.85, 1.05, "LLM\nalignment\nscoring"),
+        (5.05, 0.95, 1.55, 1.05, "Visual\nTexture\nFlavor"),
+        (7.1, 0.95, 1.75, 1.05, "TabPFN\nregression"),
+        (9.35, 0.95, 1.85, 1.05, "Held-out\nliking"),
     ]
     for x, y, w, h, label in boxes:
         box = FancyBboxPatch(
@@ -121,7 +121,16 @@ def draw_workflow() -> None:
             linewidth=0.9,
         )
         ax.add_patch(box)
-        ax.text(x + w / 2, y + h / 2, label, ha="center", va="center", fontsize=9, color=INK)
+        ax.text(
+            x + w / 2,
+            y + h / 2,
+            label,
+            ha="center",
+            va="center",
+            fontsize=8.2,
+            linespacing=1.1,
+            color=INK,
+        )
 
     for i in range(len(boxes) - 1):
         x1 = boxes[i][0] + boxes[i][2]
@@ -139,7 +148,7 @@ def draw_workflow() -> None:
         )
 
     ax.text(
-        5,
+        6,
         2.55,
         "Direct LLM alignment scoring converts paired Free-Comment text into compact predictors.",
         ha="center",
