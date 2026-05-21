@@ -207,8 +207,10 @@ def draw_modality_importance() -> None:
     labels = ["Flavor", "Texture", "Visual"]
     ours_raw = np.array([ours_map[x] for x in labels])
     mahieu_raw = np.array([mahieu[x] for x in labels])
-    ours_vals = 100 * ours_raw / ours_raw.sum()
-    mahieu_vals = 100 * mahieu_raw / mahieu_raw.sum()
+    ours_sum = ours_raw.sum()
+    mahieu_sum = mahieu_raw.sum()
+    ours_vals = 100 * ours_raw / ours_sum if ours_sum > 0 else ours_raw
+    mahieu_vals = 100 * mahieu_raw / mahieu_sum if mahieu_sum > 0 else mahieu_raw
     fig, ax = plt.subplots(figsize=(6.2, 3.2))
     x = np.arange(len(labels))
     width = 0.36
