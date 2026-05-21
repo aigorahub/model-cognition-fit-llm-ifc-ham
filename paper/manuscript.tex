@@ -6,11 +6,14 @@
 \usepackage{array}
 \usepackage{natbib}
 \usepackage[small]{caption}
+\PassOptionsToPackage{hyphens}{url}
 \usepackage{hyperref}
 \usepackage{xcolor}
 
 \graphicspath{{figures/}}
 \hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\Urlmuskip=0mu plus 1mu\relax
+\emergencystretch=3em
 
 \newcommand{\Rtwo}{\ensuremath{R^2}}
 \newcommand{\mae}{\ensuremath{\mathrm{MAE}}}
@@ -18,7 +21,7 @@
 \newcommand{\gthree}{Gemini 3 Flash}
 
 \title{Is more thinking always better? Think again:\\
-\large Less reasoning, better sensory predictions in sensometrics}
+\large Model-cognition fit in AI-supported sensory analysis}
 
 \author{
 John M. Ennis\\
@@ -361,7 +364,7 @@ During preparation of this working draft, the authors used AI-assisted tools to 
 
 \section*{Data and code availability}
 
-Data, analysis scripts, generated scoring artifacts, figures, and manuscript build files will be made available in a public GitHub repository at \url{https://github.com/aigorahub/model-cognition-fit-llm-ifc-ham}.
+Data, analysis scripts, generated scoring artifacts, figures, and manuscript build files will be made available in a public GitHub repository at \url{https://github.com/aigorahub/model-cognition-fit-ai-sensory-analysis}.
 
 \bibliographystyle{plainnat}
 \begin{thebibliography}{99}

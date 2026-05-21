@@ -30,6 +30,13 @@ SAND = "#EAE6DB"
 GREY = "#8A938D"
 LIGHT = "#F7F6F2"
 
+
+def repo_path(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
 plt.rcParams.update(
     {
         "font.family": "DejaVu Sans",
@@ -306,8 +313,8 @@ def write_summary() -> None:
             "fig5_topic_rank",
         ],
         "source_data": [
-            str(GRID_DATA / "feature_importance_results.csv"),
-            str(TOPIC_DATA / "topic_level_contrast_points.csv"),
+            repo_path(GRID_DATA / "feature_importance_results.csv"),
+            repo_path(TOPIC_DATA / "topic_level_contrast_points.csv"),
             "GRID_27 constants copied from talk/render_charts.py",
         ],
     }

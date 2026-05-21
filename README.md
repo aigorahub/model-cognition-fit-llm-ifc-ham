@@ -1,6 +1,6 @@
 # Is more thinking always better? Think again
 
-Less reasoning, better sensory predictions in sensometrics.
+Model-cognition fit in AI-supported sensory analysis.
 
 This repository supports a working paper on model-cognition fit in LLM scoring of Ideal-Free-Comment sensory data. The case study uses the cooked-ham consumer dataset from Mahieu, Visalli and Schlich (2022), where French consumers described actual hams and their ideal ham using Free-Comment across visual appearance, texture and flavor.
 

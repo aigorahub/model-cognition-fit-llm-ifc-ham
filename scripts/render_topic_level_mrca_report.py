@@ -36,6 +36,13 @@ if (PROJECT_ROOT / "data" / "topic_level").exists():
 else:
     DEFAULT_OUTPUT_DIR = Path("Embeddings and Liking/topic_level_analysis")
 
+
+def repo_path(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
+
 BG = "#F7F6F2"
 INK = "#1A2721"
 MUTED = "#4A5D53"
@@ -1026,7 +1033,7 @@ def render_report(output_dir: Path, report_path: Path) -> dict[str, Any]:
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(html_text)
     summary = {
-        "report_path": str(report_path),
+        "report_path": repo_path(report_path),
         "valid_rows": rows_valid,
         "products": int(products),
         "consumers": int(consumers),
