@@ -300,6 +300,10 @@ def write_summary() -> None:
             "fig5_topic_rank",
         ],
         "source_data": [
+            repo_path(GRID_DATA / "bootstrap_family_win_probabilities.csv"),
+            repo_path(GRID_DATA / "bootstrap_pairwise_probabilities.csv"),
+            repo_path(GRID_DATA / "bootstrap_top_config_results.csv"),
+            repo_path(GRID_DATA / "downstream_model_comparison_results.csv"),
             repo_path(GRID_RESULTS),
             repo_path(GRID_DATA / "feature_importance_results.csv"),
             repo_path(TOPIC_DATA / "topic_level_contrast_points.csv"),

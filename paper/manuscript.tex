@@ -232,7 +232,7 @@ Embedding baseline & -- & 0.200 & 1.83 & $<5$ & 0 (0.0\%) \\
 \end{tabular}
 \end{table}
 
-The full grid supports the same conclusion without relying on one scale setting. \fl{} had the highest model-family mean \Rtwo{} and the best overall configuration; its nine configurations occupied nine of the top ten positions by \Rtwo{}. The best \gthree{} low-thinking configuration used an eight-point scale and temperature 0.7, with \Rtwo{} = 0.518 and \mae{} = 1.26, still below the best Flash Lite result. Bootstrap comparisons favored Flash Lite, with estimated winning probabilities of 99.3\% versus \gthree{} minimal thinking and 91.2\% versus \gthree{} low thinking among the selected top configurations.
+The full grid supports the same conclusion without relying on one scale setting. \fl{} had the highest model-family mean \Rtwo{} and the best overall configuration; its nine configurations occupied nine of the top ten positions by \Rtwo{}. The best \gthree{} low-thinking configuration used an eight-point scale and temperature 0.7, with \Rtwo{} = 0.518 and \mae{} = 1.26, still below the best Flash Lite result. Bootstrap comparisons favored Flash Lite, with estimated family-level winning probabilities of 99.3\% versus \gthree{} minimal thinking and 91.2\% versus \gthree{} low thinking among the selected top configurations.
 
 \begin{figure}[ht]
 \centering
@@ -301,21 +301,21 @@ GB fallback topic prediction & \Rtwo{} = 0.470; \mae{} = 1.367; RMSE = 1.767 \\
 
 \subsection{TabPFN made the full loop practical}
 
-The downstream model comparison was not the headline result, but it matters for the workflow. TabPFN, XGBoost, Gradient Boosting, and Ridge were nearly tied in mean \Rtwo{} across configurations, with Random Forest behind. TabPFN had the best mean \Rtwo{} in the slide analysis at 0.476 and won 74\% of configurations. XGBoost was close at 0.474. The reason for using TabPFN is operational. The accuracy margin was modest, but TabPFN required no separate hyperparameter search and runs as a single tabular forward pass.
+The downstream model comparison was not the headline result, but it matters for the workflow. Across the 27 LLM scoring configurations, TabPFN had the best mean \Rtwo{} at 0.482 and won 20 of 27 configurations. Ridge Regression was the closest conventional baseline at 0.468. The reason for using TabPFN is operational. The accuracy margin was modest, but TabPFN required no separate hyperparameter search and runs as a single tabular forward pass.
 
 \begin{table}[ht]
 \centering
-\caption{Downstream model comparison across LLM configuration combinations.}
+\caption{Downstream model comparison across the 27 LLM scoring configurations.}
 \label{tab:downstream}
 \begin{tabular}{lcc}
 \toprule
 Downstream learner & Mean \Rtwo{} & Configurations won \\
 \midrule
-TabPFN v2 & 0.476 & 74\% \\
-XGBoost & 0.474 & -- \\
-Gradient Boosting & 0.473 & -- \\
-Ridge Regression & 0.469 & -- \\
-Random Forest & 0.444 & -- \\
+TabPFN v2 & 0.482 & 20 (74.1\%) \\
+Ridge Regression & 0.468 & 7 (25.9\%) \\
+Gradient Boosting & 0.450 & 0 \\
+Random Forest & 0.446 & 0 \\
+XGBoost & 0.438 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -346,7 +346,7 @@ Direct LLM scoring is not proper SSR. SSR may provide better-calibrated distribu
 
 The topic-level predictive result uses Gradient Boosting rather than TabPFN. It is included as a diagnostic extension of the modality and topic-rank validation, not as a replacement for the primary three-feature TabPFN result.
 
-The topic-level comparison to \citet{mahieu2022ifc} uses mapped descriptor families and driver strengths extracted from the published paper and processed notes. It should be interpreted as a structural validation of modality and topic order, not as an exact re-estimation of every descriptor coefficient.
+The topic-level comparison to \citet{mahieu2022ifc} uses mapped descriptor families and driver strengths coded from the published figure and processed notes. It should be interpreted as a structural validation of modality and topic order, not as an exact re-estimation of every descriptor coefficient.
 
 Finally, a small synthetic-agent smoke test raised an interesting question about model-person fit: whether some consumers might be better matched to direct-response models and others to reasoning-oriented models. The current smoke test is prompt-sensitive, small, and not tied to the same TabPFN workflow as the main study. It belongs in future work unless redesigned.
 

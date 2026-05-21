@@ -97,6 +97,16 @@ def latex_to_text(text: str) -> str:
     return text
 
 
+def equation_to_text(equation: str) -> str:
+    if '"visual"' in equation and '"texture"' in equation and '"flavor"' in equation:
+        return '{"visual": X, "texture": X, "flavor": X}.'
+    if r"\Rtwo" in equation and r"\mae" in equation:
+        return "R² = 1 - sum_i (y_i - y-hat_i)^2 / sum_i (y_i - y-bar)^2; MAE = (1/n) sum_i |y_i - y-hat_i|."
+    if r"\cos" in equation and r"\mathbf" in equation:
+        return "cos(a, i) = (a · i) / (||a|| ||i||)."
+    return latex_to_text(equation)
+
+
 def extract_braced(source: str, command: str) -> str:
     marker = f"\\{command}{{"
     start = source.find(marker)
@@ -318,7 +328,7 @@ def build_docx() -> None:
             parse_bibliography(doc, block)
         elif block.startswith(r"\["):
             equation = block.replace(r"\[", "").replace(r"\]", "").strip()
-            p = doc.add_paragraph(latex_to_text(equation))
+            p = doc.add_paragraph(equation_to_text(equation))
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         pos = match.end()
 

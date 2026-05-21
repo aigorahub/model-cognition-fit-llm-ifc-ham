@@ -62,7 +62,7 @@ They estimated descriptor effects on liking with a mixed linear model:
 
 Descriptor loadings from this model were interpreted as drivers of liking. They also ran Multiple-Response Correspondence Analysis (MR-CA) by modality on product-by-descriptor citation proportions, projected the ideal product as supplementary, and projected mean liking as a supplementary variable.
 
-For this comparison, Mahieu driver strengths were approximated from the processed paper notes for Fig. 1. These values should be checked against the original figure or source code before manuscript submission.
+For this comparison, Mahieu driver strengths were coded from the published figure and processed paper notes. They are used for structural comparison of modality and topic order, not as exact coefficient re-estimates.
 
 ## Why We Compare Strength Rather Than Sign
 
@@ -243,7 +243,7 @@ A conservative paper-ready statement would be:
 ## Limitations To Preserve In The Paper
 
 1. The original Mahieu descriptor matrix was not available in this workspace, so the original MR-CA could not be reproduced exactly.
-2. Mahieu driver loadings used here are approximate values from the processed paper notes and should be checked against the original figure or source materials.
+2. Mahieu driver loadings used here are coded from the published figure and processed paper notes. Treat them as structural comparison values rather than exact coefficient re-estimates.
 3. Our scores measure alignment to the consumer's ideal, not descriptor presence. Signed effects are therefore not directly comparable.
 4. The topic-level analysis is exploratory and was not the primary grid-search result in the Sensometrics deck.
 5. The current topic list was hand-specified from the paper's descriptor families. A future version could score a larger descriptor inventory directly.

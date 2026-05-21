@@ -29,3 +29,5 @@ Best configuration:
 Flash Lite_6pt_t07, Gemini 2.5 Flash Lite, 6-point scale, temperature 0.7.
 
 Bootstrap summary for selected top configurations is stored in bootstrap_top_config_results.csv.
+Pairwise and family-level bootstrap win probabilities are stored in bootstrap_pairwise_probabilities.csv and bootstrap_family_win_probabilities.csv.
+The downstream learner bake-off summary is stored in downstream_model_comparison_results.csv.

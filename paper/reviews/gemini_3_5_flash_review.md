@@ -10,7 +10,7 @@ Here is a comprehensive review of your draft manuscript, evaluated for scientifi
 
 ### 1. Critical Scientific & Substantive Issues (High Severity)
 
-*   **Confounding of Model and Scale Size in Table 3:** 
+*   **Confounding of Model and Scale Size in Table 3:**
     *   *Section 4.2 / Table 3 (Page 9)*
     *   **Issue:** Table 3 presents the "primary" results by comparing Gemini 2.5 Flash Lite (using a **6-point scale**) against Gemini 3 Flash low (using an **8-point scale**) and Gemini 3 Flash minimal (using a **4-point scale**). This confounds the model architecture (thinking vs. non-thinking) with the scale granularity. A reader might argue that Gemini 2.5 performed best simply because a 6-point scale is optimal for this task, not because it is a "non-thinking" model.
     *   **Correction:** To isolate the effect of the model, Table 3 should compare all three models using the *same* scale size (e.g., all on the 6-point scale, which was the best-performing configuration). The full grid results showing that the model effect holds across all scale sizes can be placed in an appendix or supplementary material.
