@@ -178,12 +178,10 @@ def parse_table(doc: Document, block: str) -> None:
     if body_start < 0 or body_start >= end:
         return
     body = block[body_start:end]
+    body = re.sub(r"\\(toprule|midrule|bottomrule)\s*", "", body)
     rows = []
     for raw in re.split(r"\\\\", body):
         raw = raw.strip()
-        if not raw or raw.startswith("\\toprule") or raw.startswith("\\midrule") or raw.startswith("\\bottomrule"):
-            continue
-        raw = re.sub(r"\\(toprule|midrule|bottomrule)", "", raw).strip()
         if not raw:
             continue
         rows.append([latex_to_text(cell.strip()) for cell in raw.split("&")])
@@ -276,6 +274,11 @@ def build_docx() -> None:
         if subsection:
             flush_paragraph()
             doc.add_heading(latex_to_text(subsection.group(1)), level=2)
+            return
+        subsubsection = re.match(r"\\subsubsection\{(.+)\}", stripped)
+        if subsubsection:
+            flush_paragraph()
+            doc.add_heading(latex_to_text(subsubsection.group(1)), level=3)
             return
         if stripped == r"\begin{itemize}":
             flush_paragraph()

@@ -7,8 +7,8 @@
     "fig5_topic_rank"
   ],
   "source_data": [
+    "data/grid/grid_comparison_results.csv",
     "data/grid/feature_importance_results.csv",
-    "data/topic_level/topic_level_contrast_points.csv",
-    "GRID_27 constants copied from talk/render_charts.py"
+    "data/topic_level/topic_level_contrast_points.csv"
   ]
 }

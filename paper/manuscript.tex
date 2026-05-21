@@ -40,7 +40,7 @@ Benjamin Mahieu\\
 \maketitle
 
 \begin{abstract}
-Larger and more deliberative language models are often assumed to be better scoring instruments. That assumption may fail when the target response is sensory, affective, and fast. We tested this idea in a consumer cooked-ham study where the task was to score how closely each evaluated product matched each consumer's own ideal product. The data came from a published Ideal-Free-Comment study: 2,758 home-use evaluations from 483 French consumers across 30 commercial cooked hams. Consumers described actual products and their ideal ham using Free-Comment across visual appearance, texture, and flavor, then rated liking on a 0--10 visual analogue scale. For each evaluation, a large language model compared actual and ideal comments and returned structured Likert alignment scores. Those scores were used to predict liking under consumer-group holdout validation. A raw embedding cosine-similarity baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. Direct LLM alignment scoring improved prediction substantially. In the primary analysis, \fl{}, a non-thinking direct-response model, reached \Rtwo{} = 0.573 and \mae{} = 1.22 with a six-point scale and temperature 0.7; bootstrap validation gave mean \Rtwo{} = 0.504. Reasoning-oriented \gthree{} configurations were slower, less accurate, and more prone to structured-output failures. Topic-level validation recovered the published modality hierarchy, with flavor strongest, texture second, and visual appearance weakest. The findings support a model-cognition fit hypothesis: for sensory and consumer scoring tasks, non-thinking models can be better matched to the fast judgment process being measured, while reasoning models may add cost and noise.
+Larger and more deliberative language models are often assumed to be better scoring instruments. That assumption may fail when the target response is sensory, affective, and fast. We tested this idea in a consumer cooked-ham study where the task was to score how closely each evaluated product matched each consumer's own ideal product. The data came from a published Ideal-Free-Comment study: 2,758 home-use evaluations from 483 French consumers across 30 commercial cooked hams. Consumers described actual products and their ideal ham using Free-Comment across visual appearance, texture, and flavor, then rated liking on a 0--10 visual analogue scale. For each evaluation, a large language model compared actual and ideal comments and returned structured Likert alignment scores. Those scores were used to predict liking under consumer-group holdout validation. A raw embedding cosine-similarity baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. Direct LLM alignment scoring improved prediction substantially. In the primary analysis, \fl{}, a non-thinking direct-response model, reached \Rtwo{} = 0.573 and \mae{} = 1.22 with a six-point scale and temperature 0.7; bootstrap validation gave mean \Rtwo{} = 0.504. Reasoning-oriented \gthree{} configurations were slower, less accurate, and showed more row-level scoring errors in controlled six-point comparisons. Topic-level validation recovered the published modality hierarchy, with flavor strongest, texture second, and visual appearance weakest. The findings support a model-cognition fit hypothesis: for sensory and consumer scoring tasks, non-thinking models can be better matched to the fast judgment process being measured, while reasoning models may add cost and noise.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Free-Comment; Ideal-Free-Comment; sensory analysis; consumer liking; large language models; TabPFN.
@@ -149,7 +149,7 @@ For the main six-point version, the scale anchors were: 1 = extremely different,
 \[
 \{\texttt{"visual"}: X,\ \texttt{"texture"}: X,\ \texttt{"flavor"}: X\}.
 \]
-Responses were parsed as JSON, coerced to integers, and accepted only when all three fields were present and all scores were within the allowed range. If direct JSON parsing failed, a regex fallback attempted to recover the three named scores. Rows that still failed parsing were counted as structured-output failures. Missing comments were passed as \texttt{(empty)} rather than silently removed.
+Responses were parsed as JSON, coerced to integers, and accepted only when all three fields were present and all scores were within the allowed range. If direct JSON parsing failed, a regex fallback attempted to recover the three named scores. Rows that still failed parsing were counted as parse failures. In the grid artifacts, the broader error count records row-level scoring errors observed during generation, including API or parsing failures before retry or recovery. Missing comments were passed as \texttt{(empty)} rather than silently removed.
 
 The method changes the estimand relative to descriptor-presence analysis. \citet{mahieu2022ifc} estimate how the presence of a descriptor is associated with liking. We estimate how close the actual sensory experience is to the consumer's ideal. These are related, but not identical. Because of that difference, signed descriptor coefficients should not be directly compared with our feature importances. The correct comparison is broader structure: modality order, topic rank agreement, and predictive signal.
 
@@ -162,7 +162,7 @@ The method changes the estimand relative to descriptor-presence analysis. \citet
 
 \subsubsection{Model grid and validation design}
 
-The model grid tested the paper's central hypothesis. If sensory alignment scoring behaves like a fast judgment task, non-thinking models should score it well. If extra reasoning improves the measurement, \gthree{} thinking configurations should outperform Flash Lite. The presentation analysis described a 27-configuration grid: three model configurations by three scale granularities by three temperatures. The core task, JSON schema, dataset, and downstream evaluation procedure were held fixed.
+The model grid tested the paper's central hypothesis. If sensory alignment scoring behaves like a fast judgment task, non-thinking models should score it well. If extra reasoning improves the measurement, \gthree{} thinking configurations should outperform Flash Lite. The main grid used 27 configurations: three model configurations by three scale granularities by three temperatures. The core task, JSON schema, dataset, and downstream evaluation procedure were held fixed.
 
 \begin{table}[ht]
 \centering
@@ -213,26 +213,26 @@ The embedding baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 
 
 \subsection{Non-thinking alignment scoring improved liking prediction}
 
-The best presentation configuration used \fl{}, no thinking, a six-point scale, and temperature 0.7. It reached \Rtwo{} = 0.573 and \mae{} = 1.22 on the main split. Bootstrap validation produced mean \Rtwo{} = 0.504 with a 95\% interval of [0.429, 0.582].
+The best grid configuration used \fl{}, no thinking, a six-point scale, and temperature 0.7. It reached \Rtwo{} = 0.573 and \mae{} = 1.22 on the main split. Bootstrap validation of this configuration produced mean \Rtwo{} = 0.504 with a 95\% interval of [0.429, 0.582]. To avoid confounding model choice with scale size or temperature, Table~\ref{tab:primary} compares the three model configurations at the same six-point scale and temperature 0.7.
 
 \begin{table}[ht]
 \centering
-\caption{Primary predictive and operational results.}
+\caption{Controlled predictive and operational comparison at six points and temperature 0.7.}
 \label{tab:primary}
 \footnotesize
-\begin{tabular}{@{}p{0.20\textwidth}p{0.10\textwidth}p{0.06\textwidth}p{0.19\textwidth}p{0.06\textwidth}p{0.07\textwidth}p{0.10\textwidth}@{}}
+\begin{tabular}{@{}p{0.26\textwidth}p{0.13\textwidth}p{0.08\textwidth}p{0.08\textwidth}p{0.09\textwidth}p{0.16\textwidth}@{}}
 \toprule
-Configuration & Scale, temp. & \Rtwo{} & Bootstrap \Rtwo{} & \mae{} & Time (s) & Parse errors \\
+Configuration & Scale, temp. & \Rtwo{} & \mae{} & Time (s) & Scoring errors \\
 \midrule
-Embedding baseline & -- & 0.200 & -- & 1.83 & $<5$ & 0\% \\
-\fl{} & 6 pt, 0.7 & 0.573 & 0.504 [0.429, 0.582] & 1.22 & 102 & 0.02\% \\
-\gthree{} low & 8 pt, 0.7 & 0.518 & 0.462 [0.388, 0.531] & 1.26 & 614 & 0.15\% \\
-\gthree{} minimal & 4 pt, 0.7 & 0.411 & -- & 1.38 & 131 & 3.40\% \\
+Embedding baseline & -- & 0.200 & 1.83 & $<5$ & 0 (0.0\%) \\
+\fl{} & 6 pt, 0.7 & 0.573 & 1.22 & 101 & 114 (4.1\%) \\
+\gthree{} low & 6 pt, 0.7 & 0.479 & 1.33 & 619 & 137 (5.0\%) \\
+\gthree{} minimal & 6 pt, 0.7 & 0.451 & 1.36 & 133 & 209 (7.6\%) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The full grid supports the same conclusion. All nine Flash Lite configurations beat all 18 Gemini 3 Flash configurations on \mae{} in the presentation analysis. Model family accounted for the largest share of performance variation across the grid, ahead of scale granularity and temperature. Bootstrap comparisons favored Flash Lite, with estimated probabilities of 99.3\% versus Gemini 3 minimal thinking and 91.2\% versus Gemini 3 low thinking.
+The full grid supports the same conclusion without relying on one scale setting. \fl{} had the highest model-family mean \Rtwo{} and the best overall configuration; its nine configurations occupied nine of the top ten positions by \Rtwo{}. The best \gthree{} low-thinking configuration used an eight-point scale and temperature 0.7, with \Rtwo{} = 0.518 and \mae{} = 1.26, still below the best Flash Lite result. Bootstrap comparisons favored Flash Lite, with estimated winning probabilities of 99.3\% versus \gthree{} minimal thinking and 91.2\% versus \gthree{} low thinking among the selected top configurations.
 
 \begin{figure}[ht]
 \centering
@@ -243,12 +243,12 @@ The full grid supports the same conclusion. All nine Flash Lite configurations b
 
 \subsection{Reasoning was slower and less reliable}
 
-The tested reasoning-oriented configurations also carried operational costs. Runtime increased sharply for \gthree{} low thinking, and structured-output failures were more frequent for \gthree{} minimal thinking. These failures matter because the pipeline depends on thousands of parseable JSON responses.
+The tested reasoning-oriented configurations also carried operational costs. Runtime increased sharply for \gthree{} low thinking. At the same six-point scale and temperature 0.7, \gthree{} minimal thinking also produced more row-level scoring errors. These failures matter because the pipeline depends on thousands of parseable JSON responses.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.92\textwidth]{fig3_operations.png}
-\caption{Operational comparison for highlighted configurations. A useful scorer must be accurate, fast enough to run across thousands of rows, and reliable enough to return parseable structured output.}
+\caption{Operational comparison for the controlled six-point, temperature 0.7 configurations. A useful scorer must be accurate, fast enough to run across thousands of rows, and reliable enough to return parseable structured output.}
 \label{fig:operations}
 \end{figure}
 
@@ -265,7 +265,7 @@ The feature-importance analysis from the three-score model gave the largest role
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.78\textwidth]{fig4_modality_importance.png}
-\caption{Modality-level sanity check. The two bars are not in the same units: Mahieu et al. values summarize modality signal from the original descriptor-based analysis, while our values are downstream model feature importances from LLM alignment scores. The comparison is about order and structure.}
+\caption{Modality-level sanity check. Values are normalized within method so the comparison is about order and relative share, not raw units. Mahieu et al. values summarize modality signal from the original descriptor-based analysis, while our values are downstream model feature importances from LLM alignment scores.}
 \label{fig:modality}
 \end{figure}
 
@@ -287,7 +287,7 @@ The topic-level analysis strengthened that result. It recovered the same modalit
 Quantity & Result \\
 \midrule
 Valid topic-level rows & 2,757 \\
-Parse errors & 1 \\
+Unparsed topic rows & 1 \\
 Topic families & 17 \\
 Original modality order & Flavor $>$ Texture $>$ Visual \\
 LLM modality order & Flavor $>$ Texture $>$ Visual \\
@@ -338,15 +338,15 @@ The benchmark should also be treated as a living instrument. Gemini 3.5 Flash la
 
 This is a single-product-category study. Cooked ham has a clear sensory structure, and flavor dominates liking in the original analysis. Other categories may have different modality balances and may not favor non-thinking models to the same extent.
 
-The main model comparison is limited to Gemini configurations. The paper should not claim that all reasoning models behave the same way. It should claim that the tested reasoning configurations did not help this sensory scoring task, and that the result supports a broader task-fit hypothesis worth testing.
+The main model comparison is limited to Gemini configurations. The result should not be read as a universal claim about every reasoning model from every provider. It shows that the tested Gemini reasoning configurations did not help this sensory scoring task, and it supports a broader task-fit hypothesis worth testing across model families.
 
-Exact model aliases require audit. Any use of provider aliases must be resolved to stable model IDs and run dates before submission.
+The provider model names are reported as the API aliases used at scoring time. Because model providers update aliases, the durable object is the benchmark loop and saved scoring artifacts, not a permanent ranking of named commercial models.
 
 Direct LLM scoring is not proper SSR. SSR may provide better-calibrated distributions and uncertainty information. A fair comparison should ask whether SSR's probability distributions improve calibration or whether direct scoring wins because the prompt focuses the model on the sensory comparison we care about.
 
-The topic-level predictive result currently uses Gradient Boosting as a placeholder. Topic-level TabPFN results should replace it if a stable TabPFN run becomes available.
+The topic-level predictive result uses Gradient Boosting rather than TabPFN. It is included as a diagnostic extension of the modality and topic-rank validation, not as a replacement for the primary three-feature TabPFN result.
 
-The topic-level comparison to \citet{mahieu2022ifc} uses mapped descriptor families and approximate driver strengths from processed paper notes. These mappings and values need to be checked against the primary paper or original code before final submission.
+The topic-level comparison to \citet{mahieu2022ifc} uses mapped descriptor families and driver strengths extracted from the published paper and processed notes. It should be interpreted as a structural validation of modality and topic order, not as an exact re-estimation of every descriptor coefficient.
 
 Finally, a small synthetic-agent smoke test raised an interesting question about model-person fit: whether some consumers might be better matched to direct-response models and others to reasoning-oriented models. The current smoke test is prompt-sensitive, small, and not tied to the same TabPFN workflow as the main study. It belongs in future work unless redesigned.
 
