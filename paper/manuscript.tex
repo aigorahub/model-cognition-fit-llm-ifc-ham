@@ -197,7 +197,7 @@ The first baseline used raw text embeddings. Actual and ideal comments were embe
 \]
 This baseline tested whether generic semantic closeness could solve the task without constrained sensory scoring.
 
-We also ran a stricter embedding-only check in the same shape as the direct scoring pipeline. Using EmbeddingGemma, we computed three actual-versus-ideal cosine similarities per row: visual, texture, and flavor. We tested raw semantic textual similarity embeddings, modality-tagged embeddings, question-and-answer-framed embeddings, and retrieval-document embeddings. The question-and-answer version put the modality question into the text before embedding, so the embedding model had task context rather than bare comments alone. Downstream prediction for this diagnostic used standard scikit-learn regressors over 50 consumer-group splits and AutoGluon on the fixed consumer holdout \citep{erickson2020autogluon}.
+We also ran a stricter embedding-only check in the same shape as the direct scoring pipeline. Using EmbeddingGemma, we computed three actual-versus-ideal cosine similarities per row: visual, texture, and flavor. We tested raw semantic textual similarity embeddings, modality-tagged embeddings, question-and-answer-framed embeddings, and retrieval-document embeddings. The question-and-answer version put the modality question into the text before embedding, so the embedding model had task context rather than bare comments alone. Downstream prediction for this diagnostic used standard scikit-learn regressors over 50 consumer-group splits, AutoGluon on the fixed consumer holdout \citep{erickson2020autogluon}, and local TabPFN on the same fixed holdout \citep{hollmann2025tabpfn}.
 
 The direct LLM scoring pipeline produced compact tabular features. These features were passed to downstream models to predict liking. The main model in the presentation analysis was TabPFN. Other downstream models were also compared, including XGBoost, Gradient Boosting, Ridge Regression, and Random Forest.
 
@@ -211,9 +211,9 @@ Each score measures actual-versus-ideal alignment for that topic. These are not 
 
 \subsection{Embeddings did not capture the actual-versus-ideal relation}
 
-The embedding baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. This is informative because the task is not simply to decide whether two comments are semantically close. A consumer might describe an actual ham and an ideal ham with overlapping words but different sensory implications. Another consumer might use different words to describe a close match. Raw cosine similarity does not force the comparison to respect modality, hedonic direction, or consumer-specific ideals.
+The initial embedding baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. This is informative because the task is not simply to decide whether two comments are semantically close. A consumer might describe an actual ham and an ideal ham with overlapping words but different sensory implications. Another consumer might use different words to describe a close match. Raw cosine similarity does not force the comparison to respect modality, hedonic direction, or consumer-specific ideals.
 
-The stricter three-score embedding check led to the same conclusion. The best variant used question-and-answer-framed EmbeddingGemma similarities and ExtraTrees regression, reaching mean \Rtwo{} = 0.135 across 50 consumer-group splits. On the fixed holdout, question-and-answer-framed similarities with AutoGluon reached \Rtwo{} = 0.063, \mae{} = 1.83, and Pearson $r = 0.31$. Raw, modality-tagged, and retrieval-document variants were weaker. This was not a minimal embedding baseline. Even task-framed embeddings did not recover the relational sensory signal that direct scoring captured.
+The stricter three-score embedding check led to the same conclusion. The best repeated-split scikit-learn variant used question-and-answer-framed EmbeddingGemma similarities and ExtraTrees regression, reaching mean \Rtwo{} = 0.135 across 50 consumer-group splits. On the fixed holdout, question-and-answer-framed similarities reached \Rtwo{} = 0.063 with AutoGluon and \Rtwo{} = 0.170 with local TabPFN. The corresponding TabPFN \mae{} was 1.73. Raw, modality-tagged, and retrieval-document variants were weaker. This was not a minimal embedding baseline. Even task-framed embeddings did not recover the relational sensory signal that direct scoring captured.
 
 \subsection{Non-thinking alignment scoring improved liking prediction}
 
@@ -228,7 +228,7 @@ The best grid configuration used \fl{}, no thinking, a six-point scale, and temp
 \toprule
 Configuration & Scale, temp. & \Rtwo{} & \mae{} & Time (s) & Scoring errors \\
 \midrule
-Embedding baseline & -- & 0.200 & 1.83 & $<5$ & 0 (0.0\%) \\
+Initial embedding baseline & -- & 0.200 & 1.83 & $<5$ & 0 (0.0\%) \\
 \fl{} & 6 pt, 0.7 & 0.573 & 1.22 & 101 & 114 (4.1\%) \\
 \gthree{} low & 6 pt, 0.7 & 0.479 & 1.33 & 619 & 137 (5.0\%) \\
 \gthree{} minimal & 6 pt, 0.7 & 0.451 & 1.36 & 133 & 209 (7.6\%) \\

@@ -14,10 +14,10 @@ Can `google/embeddinggemma-300m` turn each pair of actual and ideal comments int
 - Target: 0-10 liking score.
 - Features: exactly three similarity scores: visual, texture, flavor.
 - Holdout discipline: splits are by consumer, not by row, to avoid consumer-level leakage.
-- Remote AutoGluon split: fixed `GroupShuffleSplit` with random state 42, 20 percent held out.
+- Local TabPFN and remote AutoGluon split: fixed `GroupShuffleSplit` with random state 42, 20 percent held out.
 - Local scikit-learn split: 50 repeated consumer-level `GroupShuffleSplit` evaluations.
 
-The exported remote input files live in `data/embedding_baselines/tabpfn_inputs/`. The folder name is historical: these CSVs are generic ML inputs and were used with AutoGluon after the TabPFN run was stopped.
+The exported input files live in `data/embedding_baselines/tabpfn_inputs/`. The folder name is historical: these CSVs are generic ML inputs and were used with local TabPFN and AutoGluon.
 
 ## Embedding variants tested
 
@@ -29,9 +29,20 @@ The exported remote input files live in `data/embedding_baselines/tabpfn_inputs/
 
 The Q+A framing is closest to the strategy recommended in the embedding-practice guide: give the embedding model more of the comparison context instead of asking it to infer the task from bare text.
 
+## Local TabPFN results
+
+TabPFN ran locally from `/Users/johnennis/TabPFN-2/tabpfn-venv` on MPS, using the explicit consumer holdout split column.
+
+| Feature set | Model | R2 | MAE | RMSE | Time (s) |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Q+A STS | TabPFN v2 | 0.170 | 1.731 | 2.164 | 16.1 |
+| Tagged STS | TabPFN v2 | 0.108 | 1.804 | 2.244 | 18.1 |
+| Raw STS | TabPFN v2 | 0.088 | 1.820 | 2.269 | 18.0 |
+| Retrieval-document | TabPFN v2 | 0.057 | 1.847 | 2.306 | 18.0 |
+
 ## Remote AutoGluon results
 
-AutoGluon ran through the `tabpfn-launcher` Mini2 path, using an explicit consumer holdout split column. The TabPFN run was stopped because the Mini machines are likely to struggle with the full problem, and this baseline is mainly about whether embeddings carry enough signal.
+AutoGluon ran through the `tabpfn-launcher` Mini2 path, using the same explicit consumer holdout split column.
 
 | Feature set | Best model | R2 | MAE | RMSE | Pearson r |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -61,7 +72,7 @@ The best repeated-split result was Q+A STS with ExtraTrees:
 
 The embedding baseline improved when the comments were framed around the actual task. Q+A STS was better than raw STS, tagged STS, retrieval-style embeddings, and whole-comment cosine similarity.
 
-Even with that improvement, the embedding-only three-score route is far below the direct LLM scoring result used in the paper and talk. The best local repeated-split embedding result reached mean R2 of about 0.135. The best remote AutoGluon run on the fixed consumer holdout reached R2 of about 0.063. The direct LLM scoring pipeline reached approximately R2 = 0.573 and MAE = 1.22 on the main held-out evaluation.
+Even with that improvement, the embedding-only three-score route is far below the direct LLM scoring result used in the paper and talk. The best local repeated-split scikit-learn result reached mean R2 of about 0.135. Local TabPFN improved the fixed-holdout result to R2 = 0.170 and MAE = 1.73. The direct LLM scoring pipeline reached approximately R2 = 0.573 and MAE = 1.22 on the main held-out evaluation.
 
 This supports the paper's central interpretation. Direct sensory scoring by the language model is not just measuring generic semantic closeness between actual and ideal comments. It appears to be doing a more task-aligned judgment: reading the comments, focusing on the relevant sensory modality, and translating that comparison into a structured similarity score.
 
@@ -85,4 +96,10 @@ Run AutoGluon through `tabpfn-launcher`:
 python scripts/run_remote_autogluon_embedding_sweep.py
 ```
 
-The other AutoGluon JSON result files are stored in `data/embedding_baselines/autogluon_outputs/`.
+Run local TabPFN:
+
+```bash
+python scripts/run_local_tabpfn_embedding_sweep.py
+```
+
+The AutoGluon JSON result files are stored in `data/embedding_baselines/autogluon_outputs/`. The local TabPFN result files are stored in `data/embedding_baselines/tabpfn_local_outputs/`.
