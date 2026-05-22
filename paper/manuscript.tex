@@ -66,7 +66,7 @@ This paper asks whether an LLM can score part of that relationship more directly
 The paper has five research questions:
 \begin{enumerate}
 \item Are non-thinking LLMs better suited than reasoning-oriented LLMs for sensory actual-versus-ideal scoring?
-\item Can direct LLM alignment scores predict consumer liking better than raw embedding similarity?
+\item Can direct LLM alignment scores predict consumer liking better than embedding-based similarity?
 \item Do the resulting features recover the sensory hierarchy reported by \citet{mahieu2022ifc}?
 \item Can model choice improve accuracy, speed, and structured-output reliability at the same time?
 \item How should this scoring approach be positioned relative to Free-Comment analysis, IFC, and Semantic Similarity Rating?
@@ -209,7 +209,7 @@ Each score measures actual-versus-ideal alignment for that topic. These are not 
 
 \section{Results}
 
-\subsection{Raw embeddings did not capture the actual-versus-ideal relation}
+\subsection{Embeddings did not capture the actual-versus-ideal relation}
 
 The embedding baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. This is informative because the task is not simply to decide whether two comments are semantically close. A consumer might describe an actual ham and an ideal ham with overlapping words but different sensory implications. Another consumer might use different words to describe a close match. Raw cosine similarity does not force the comparison to respect modality, hedonic direction, or consumer-specific ideals.
 
@@ -358,7 +358,7 @@ Finally, a small synthetic-agent smoke test raised an interesting question about
 
 \section{Conclusion}
 
-Direct LLM alignment scoring offers a practical way to analyze Ideal-Free-Comment data, but the larger lesson is about model-cognition fit. In the cooked-ham case study, the non-thinking model was the better sensory scorer. It turned paired actual and ideal comments into compact predictors of liking, outperformed raw embedding similarity, and recovered the main sensory hierarchy from the original Free-Comment analysis. The reasoning-oriented configurations were slower, less accurate, and less reliable in structured output. For sensory and consumer analytics, the best LLM is not necessarily the largest or most deliberative one. It is the model whose response style fits the measurement task.
+Direct LLM alignment scoring offers a practical way to analyze Ideal-Free-Comment data, but the larger lesson is about model-cognition fit. In the cooked-ham case study, the non-thinking model was the better sensory scorer. It turned paired actual and ideal comments into compact predictors of liking, outperformed embedding-based similarity, and recovered the main sensory hierarchy from the original Free-Comment analysis. The reasoning-oriented configurations were slower, less accurate, and less reliable in structured output. For sensory and consumer analytics, the best LLM is not necessarily the largest or most deliberative one. It is the model whose response style fits the measurement task.
 
 \section*{Declaration of competing interest}
 
