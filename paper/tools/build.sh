@@ -66,6 +66,7 @@ cp highlights.txt build/highlights.txt
 
 echo "==> Building manuscript.docx"
 "$DOC_PY" tools/build_docx.py
+cp build/manuscript.docx manuscript.docx
 
 echo "==> Cleaning LaTeX intermediates"
 rm -f manuscript.aux manuscript.log manuscript.out

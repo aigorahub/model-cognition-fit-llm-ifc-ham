@@ -9,3 +9,5 @@ venv/
 *.out
 *.toc
 paper/build/
+data/embedding_baselines/cache/
+data/embedding_baselines/**/model/

@@ -24,6 +24,7 @@ OUT = PAPER / "build" / "manuscript.docx"
 CITES = {
     "argyle2023silicon": ("Argyle et al.", "2023"),
     "brand2023willingness": ("Brand et al.", "2023"),
+    "erickson2020autogluon": ("Erickson et al.", "2020"),
     "gilardi2023chatgpt": ("Gilardi et al.", "2023"),
     "gema2025inverse": ("Gema et al.", "2025"),
     "hamilton2020nlp": ("Hamilton and Lahne", "2020"),

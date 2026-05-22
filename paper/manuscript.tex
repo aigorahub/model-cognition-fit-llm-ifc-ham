@@ -40,7 +40,7 @@ Benjamin Mahieu\\
 \maketitle
 
 \begin{abstract}
-Larger and more deliberative language models are often assumed to be better scoring instruments. That assumption may fail when the target response is sensory, affective, and fast. We tested this idea in a consumer cooked-ham study where the task was to score how closely each evaluated product matched each consumer's own ideal product. The data came from a published Ideal-Free-Comment study: 2,758 home-use evaluations from 483 French consumers across 30 commercial cooked hams. Consumers described actual products and their ideal ham using Free-Comment across visual appearance, texture, and flavor, then rated liking on a 0--10 visual analogue scale. For each evaluation, a large language model compared actual and ideal comments and returned structured Likert alignment scores. Those scores were used to predict liking under consumer-group holdout validation. A raw embedding cosine-similarity baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. Direct LLM alignment scoring improved prediction substantially. In the primary analysis, \fl{}, a non-thinking direct-response model, reached \Rtwo{} = 0.573 and \mae{} = 1.22 with a six-point scale and temperature 0.7; bootstrap validation gave mean \Rtwo{} = 0.504. Reasoning-oriented \gthree{} configurations were slower, less accurate, and showed more row-level scoring errors in controlled six-point comparisons. Topic-level validation recovered the published modality hierarchy, with flavor strongest, texture second, and visual appearance weakest. The findings support a model-cognition fit hypothesis: for sensory and consumer scoring tasks, non-thinking models can be better matched to the fast judgment process being measured, while reasoning models may add cost and noise.
+Larger and more deliberative language models are often assumed to be better scoring instruments. That assumption may fail when the target response is sensory, affective, and fast. We tested this idea in a consumer cooked-ham study where the task was to score how closely each evaluated product matched each consumer's own ideal product. The data came from a published Ideal-Free-Comment study: 2,758 home-use evaluations from 483 French consumers across 30 commercial cooked hams. Consumers described actual products and their ideal ham using Free-Comment across visual appearance, texture, and flavor, then rated liking on a 0--10 visual analogue scale. For each evaluation, a large language model compared actual and ideal comments and returned structured Likert alignment scores. Those scores were used to predict liking under consumer-group holdout validation. Embedding cosine-similarity baselines performed poorly, even when the embeddings were framed around the same three sensory modalities. Direct LLM alignment scoring improved prediction substantially. In the primary analysis, \fl{}, a non-thinking direct-response model, reached \Rtwo{} = 0.573 and \mae{} = 1.22 with a six-point scale and temperature 0.7; bootstrap validation gave mean \Rtwo{} = 0.504. Reasoning-oriented \gthree{} configurations were slower, less accurate, and showed more row-level scoring errors in controlled six-point comparisons. Topic-level validation recovered the published modality hierarchy, with flavor strongest, texture second, and visual appearance weakest. The findings support a model-cognition fit hypothesis: for sensory and consumer scoring tasks, non-thinking models can be better matched to the fast judgment process being measured, while reasoning models may add cost and noise.
 \end{abstract}
 
 \noindent\textbf{Keywords:} Free-Comment; Ideal-Free-Comment; sensory analysis; consumer liking; large language models; TabPFN.
@@ -197,6 +197,8 @@ The first baseline used raw text embeddings. Actual and ideal comments were embe
 \]
 This baseline tested whether generic semantic closeness could solve the task without constrained sensory scoring.
 
+We also ran a stricter embedding-only check in the same shape as the direct scoring pipeline. Using EmbeddingGemma, we computed three actual-versus-ideal cosine similarities per row: visual, texture, and flavor. We tested raw semantic textual similarity embeddings, modality-tagged embeddings, question-and-answer-framed embeddings, and retrieval-document embeddings. The question-and-answer version put the modality question into the text before embedding, so the embedding model had task context rather than bare comments alone. Downstream prediction for this diagnostic used standard scikit-learn regressors over 50 consumer-group splits and AutoGluon on the fixed consumer holdout \citep{erickson2020autogluon}.
+
 The direct LLM scoring pipeline produced compact tabular features. These features were passed to downstream models to predict liking. The main model in the presentation analysis was TabPFN. Other downstream models were also compared, including XGBoost, Gradient Boosting, Ridge Regression, and Random Forest.
 
 \subsubsection{Topic-level validation}
@@ -210,6 +212,8 @@ Each score measures actual-versus-ideal alignment for that topic. These are not 
 \subsection{Raw embeddings did not capture the actual-versus-ideal relation}
 
 The embedding baseline performed poorly, with \Rtwo{} near 0.20 and \mae{} near 1.83. This is informative because the task is not simply to decide whether two comments are semantically close. A consumer might describe an actual ham and an ideal ham with overlapping words but different sensory implications. Another consumer might use different words to describe a close match. Raw cosine similarity does not force the comparison to respect modality, hedonic direction, or consumer-specific ideals.
+
+The stricter three-score embedding check led to the same conclusion. The best variant used question-and-answer-framed EmbeddingGemma similarities and ExtraTrees regression, reaching mean \Rtwo{} = 0.135 across 50 consumer-group splits. On the fixed holdout, question-and-answer-framed similarities with AutoGluon reached \Rtwo{} = 0.063, \mae{} = 1.83, and Pearson $r = 0.31$. Raw, modality-tagged, and retrieval-document variants were weaker. This was not a minimal embedding baseline. Even task-framed embeddings did not recover the relational sensory signal that direct scoring captured.
 
 \subsection{Non-thinking alignment scoring improved liking prediction}
 
@@ -324,7 +328,7 @@ XGBoost & 0.438 & 0 \\
 
 This study shows that the cognitive style of the scoring model matters. The best-performing scorer was the fast, non-thinking model, not the reasoning-oriented model. That result fits the nature of the target task. Liking a ham is a sensory and affective judgment. The scoring prompt asks the model to judge whether the actual product matched the consumer's ideal experience. It does not ask the model to solve a multi-step reasoning problem.
 
-Direct LLM alignment scoring also turns IFC data into useful predictors of liking. The model receives paired actual and ideal consumer comments, scores sensory alignment, and produces tabular features that can be modeled with standard tools. In the cooked-ham dataset, those features predicted liking much better than raw embedding similarity and recovered the same broad sensory hierarchy as the original descriptor-based analysis.
+Direct LLM alignment scoring also turns IFC data into useful predictors of liking. The model receives paired actual and ideal consumer comments, scores sensory alignment, and produces tabular features that can be modeled with standard tools. In the cooked-ham dataset, those features predicted liking much better than embedding similarity and recovered the same broad sensory hierarchy as the original descriptor-based analysis. The follow-up EmbeddingGemma checks strengthen that interpretation. A modern embedding model improved when we added modality labels and question-and-answer task framing, but the resulting similarity scores still behaved like semantic closeness measures rather than sensory alignment judgments.
 
 The result sits between classical sensory statistics and newer LLM judging methods. It does not discard the sensory structure of the problem. The prompt asks for visual, texture, and flavor comparisons, and the topic-level extension uses topic families grounded in the original descriptor analysis. At the same time, it avoids much of the manual work of cleaning, lemmatizing, grouping, and filtering free comments before modeling.
 
@@ -343,6 +347,8 @@ The main model comparison is limited to Gemini configurations. The result should
 The provider model names are reported as the API aliases used at scoring time. Because model providers update aliases, the durable object is the benchmark loop and saved scoring artifacts, not a permanent ranking of named commercial models.
 
 Direct LLM scoring is not proper SSR. SSR may provide better-calibrated distributions and uncertainty information. A fair comparison should ask whether SSR's probability distributions improve calibration or whether direct scoring wins because the prompt focuses the model on the sensory comparison we care about.
+
+The embedding baselines are also not the last word on embedding methods. A fine-tuned bi-encoder or a contrastive model trained on sensory alignment labels might perform better. The present result is narrower: off-the-shelf embeddings, even when prompted and reduced to the same three modality scores, did not explain liking nearly as well as direct LLM scoring.
 
 The topic-level predictive result uses Gradient Boosting rather than TabPFN. It is included as a diagnostic extension of the modality and topic-rank validation, not as a replacement for the primary three-feature TabPFN result.
 
@@ -380,6 +386,12 @@ Brand, J., Israeli, A., \& Ngwe, D. (2023).
 Using LLMs for market research.
 Harvard Business School Working Paper 23-062.
 \url{https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4395751}.
+
+\bibitem[Erickson et~al.(2020)]{erickson2020autogluon}
+Erickson, N., Mueller, J., Shirkov, A., Zhang, H., Larroy, P., Li, M., \& Smola, A. (2020).
+AutoGluon-Tabular: Robust and accurate AutoML for structured data.
+Preprint, arXiv:2003.06505.
+\url{https://doi.org/10.48550/arXiv.2003.06505}.
 
 \bibitem[Gilardi et~al.(2023)]{gilardi2023chatgpt}
 Gilardi, F., Alizadeh, M., \& Kubli, M. (2023).
